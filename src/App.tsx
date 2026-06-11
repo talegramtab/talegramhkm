@@ -40,11 +40,11 @@ export default function App() {
       }
     }
     return {
-      adUrl: 'https://www.google.com',
+      adUrl: 'https://beastlyfluke.com/p8qcw7a1?key=469a489eda52c136a8c82a6094debcbe',
       redirectType: 'global',
       selectedTheme: 'youtube',
-      pageTitle: 'YouTube Premium Portal',
-      selectedCategory: 'gaming'
+      pageTitle: 'Tale Viral Link',
+      selectedCategory: 'viral'
     };
   });
 
@@ -76,6 +76,34 @@ export default function App() {
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
 
+  // 🔄 FETCH SYSTEM DATA FROM SERVER ON MOUNT (Global synchronization)
+  useEffect(() => {
+    fetch('/api/data')
+      .then(res => {
+        if (!res.ok) throw new Error('API server unreachable');
+        return res.json();
+      })
+      .then(data => {
+        if (data.settings) {
+          setSettings(data.settings);
+          localStorage.setItem('vlp_settings', JSON.stringify(data.settings));
+        }
+        if (data.videos) {
+          setVideos(data.videos);
+          localStorage.setItem('vlp_videos', JSON.stringify(data.videos));
+        }
+        if (typeof data.clickCount === 'number') {
+          setClickCount(data.clickCount);
+          localStorage.setItem('vlp_click_count', data.clickCount.toString());
+        }
+        if (data.statsBreakdown) {
+          setStatsBreakdown(data.statsBreakdown);
+          localStorage.setItem('vlp_stats_breakdown', JSON.stringify(data.statsBreakdown));
+        }
+      })
+      .catch(err => console.warn('Using offline visual states:', err));
+  }, []);
+
   const toggleAdminPanel = () => {
     if (isAdminOpen) {
       setIsAdminOpen(false);
@@ -105,17 +133,17 @@ export default function App() {
   const [newDuration, setNewDuration] = useState('');
   const [newThumbnail, setNewThumbnail] = useState('');
 
-  // Save settings when modified
+  // Save settings when modified locally
   useEffect(() => {
     localStorage.setItem('vlp_settings', JSON.stringify(settings));
   }, [settings]);
 
-  // Save videos when modified
+  // Save videos when modified locally
   useEffect(() => {
     localStorage.setItem('vlp_videos', JSON.stringify(videos));
   }, [videos]);
 
-  // Save click counts
+  // Save click counts locally
   useEffect(() => {
     localStorage.setItem('vlp_click_count', clickCount.toString());
   }, [clickCount]);
@@ -163,19 +191,33 @@ export default function App() {
       return;
     }
 
-    // Register analytics
+    const key = itemId || 'global_click';
+
+    // Register analytics locally first
     setClickCount(prev => prev + 1);
-    if (itemId) {
-      setStatsBreakdown(prev => ({
-        ...prev,
-        [itemId]: (prev[itemId] || 0) + 1
-      }));
-    } else {
-      setStatsBreakdown(prev => ({
-        ...prev,
-        'global_click': (prev['global_click'] || 0) + 1
-      }));
-    }
+    setStatsBreakdown(prev => ({
+      ...prev,
+      [key]: (prev[key] || 0) + 1
+    }));
+
+    // Register analytics on the server side
+    fetch('/api/click', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ itemId: key })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (typeof data.clickCount === 'number') {
+        setClickCount(data.clickCount);
+        localStorage.setItem('vlp_click_count', data.clickCount.toString());
+      }
+      if (data.statsBreakdown) {
+        setStatsBreakdown(data.statsBreakdown);
+        localStorage.setItem('vlp_stats_breakdown', JSON.stringify(data.statsBreakdown));
+      }
+    })
+    .catch(err => console.debug('Offline stats synced locally:', err));
 
     // Log to simulated console for the creator to see
     console.log(`[Redirect System] Redirecting user to: ${settings.adUrl} on action: ${actionName || 'Global Area Click'}`);
@@ -238,27 +280,79 @@ export default function App() {
     triggerToast('🗑️ কার্ডটি ডিলিট করা হয়েছে!');
   };
 
-  // Reset counters
+  // Save admin configuration permanently to backend server data-store
+  const handleSaveToServer = () => {
+    fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings, videos })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to save to backend');
+      return res.json();
+    })
+    .then(() => {
+      triggerToast('💾 সারা বিশ্বের সকল ইউজারের জন্য সার্ভারে কনফিগারেশন সেভ হয়েছে!');
+    })
+    .catch(err => {
+      console.error(err);
+      triggerToast('❌ সার্ভার সেভ ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+    });
+  };
+
+  // Reset counters on server
   const handleResetStats = () => {
-    setClickCount(0);
-    setStatsBreakdown({});
-    triggerToast('🔄 ক্লিক কাউন্টার ও অ্যানালিটিক্স রিসেট করা হয়েছে।');
+    fetch('/api/reset-stats', { method: 'POST' })
+    .then(res => {
+      if (!res.ok) throw new Error('Reset failed');
+      return res.json();
+    })
+    .then(() => {
+      setClickCount(0);
+      setStatsBreakdown({});
+      localStorage.setItem('vlp_click_count', '0');
+      localStorage.setItem('vlp_stats_breakdown', '{}');
+      triggerToast('🔄 লাইভ ক্লিক কাউন্টার ও সার্ভার অ্যানালিটিক্স রিসেট করা হয়েছে।');
+    })
+    .catch(err => {
+      console.error(err);
+      setClickCount(0);
+      setStatsBreakdown({});
+      triggerToast('🔄 লোকাল কাউন্টার রিসেট হয়েছে।');
+    });
   };
 
   // Reset to default setups
   const handleResetAllDefaults = () => {
     localStorage.clear();
-    setSettings({
-      adUrl: 'https://www.google.com',
+    const defaultSettings: AdminSettings = {
+      adUrl: 'https://beastlyfluke.com/p8qcw7a1?key=469a489eda52c136a8c82a6094debcbe',
       redirectType: 'global',
       selectedTheme: 'youtube',
-      pageTitle: 'YouTube Premium Portal',
-      selectedCategory: 'gaming'
-    });
-    setVideos([...CATEGORY_PRESETS['gaming']]);
+      pageTitle: 'Tale Viral Link',
+      selectedCategory: 'viral'
+    };
+    const defaultVideos = [...CATEGORY_PRESETS['viral']];
+
+    setSettings(defaultSettings);
+    setVideos(defaultVideos);
     setClickCount(0);
     setStatsBreakdown({});
-    triggerToast('🔄 সমস্ত অপশন এবং লিঙ্ক রিফ্রেস করে ডিফল্ট করা হয়েছে!');
+
+    // Save defaults to server as well
+    fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ settings: defaultSettings, videos: defaultVideos })
+    })
+    .then(() => fetch('/api/reset-stats', { method: 'POST' }))
+    .then(() => {
+      triggerToast('🔄 সমস্ত অপশন রিফ্রেস করে ডিফল্ট করা হয়েছে!');
+    })
+    .catch(err => {
+      console.error(err);
+      triggerToast('🔄 অপশন রিসেট হয়েছে!');
+    });
   };
 
   return (
@@ -601,21 +695,31 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Reset Actions */}
-                  <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-800">
+                  {/* Save Configuration & Reset Actions */}
+                  <div className="mt-4 pt-4 border-t border-gray-800 space-y-2">
                     <button
-                      onClick={handleResetStats}
-                      className="px-2 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                      type="button"
+                      onClick={handleSaveToServer}
+                      className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-950/25"
                     >
-                      <RotateCcw size={11} />
-                      কাউন্টার মুছুন
+                      💾 সার্ভারে পার্মানেন্টলি সেভ করুন (Save Global)
                     </button>
-                    <button
-                      onClick={handleResetAllDefaults}
-                      className="px-2 py-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 hover:text-white border border-red-900/30 rounded text-[10px] font-bold transition cursor-pointer"
-                    >
-                      ডিফল্ট করুন
-                    </button>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={handleResetStats}
+                        className="px-2 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <RotateCcw size={11} />
+                        কাউন্টার মুছুন
+                      </button>
+                      <button
+                        onClick={handleResetAllDefaults}
+                        className="px-2 py-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 hover:text-white border border-red-900/30 rounded text-[10px] font-bold transition cursor-pointer"
+                      >
+                        ডিফল্ট করুন
+                      </button>
+                    </div>
                   </div>
                 </div>
 
