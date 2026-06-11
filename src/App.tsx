@@ -73,6 +73,30 @@ export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+
+  const toggleAdminPanel = () => {
+    if (isAdminOpen) {
+      setIsAdminOpen(false);
+      triggerToast('🔒 অ্যাডমিন প্যানেল বন্ধ করা হয়েছে');
+    } else {
+      setShowPasswordPrompt(true);
+      setPasswordInput('');
+    }
+  };
+
+  const handleVerifyPassword = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (passwordInput === '362310') {
+      setIsAdminOpen(true);
+      setShowPasswordPrompt(false);
+      setPasswordInput('');
+      triggerToast('🔓 অ্যাডমিন প্যানেল খোলা হয়েছে!');
+    } else {
+      triggerToast('❌ ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।');
+    }
+  };
   
   // Custom video creation state
   const [newTitle, setNewTitle] = useState('');
@@ -902,8 +926,7 @@ export default function App() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setIsAdminOpen(!isAdminOpen);
-                triggerToast(!isAdminOpen ? '🔓 অ্যাডমিন প্যানেল খোলা হয়েছে!' : '🔒 অ্যাডমিন প্যানেল বন্ধ করা হয়েছে');
+                toggleAdminPanel();
               }}
               className="admin-portal-exclude cursor-pointer select-none text-zinc-700 hover:text-amber-500 w-3 h-3 inline-flex items-center justify-center font-bold font-mono transition-colors"
               title="Portal Management System"
@@ -926,14 +949,67 @@ export default function App() {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          setIsAdminOpen(!isAdminOpen);
-          triggerToast(!isAdminOpen ? '🔓 অ্যাডমিন প্যানেল খোলা হয়েছে!' : '🔒 অ্যাডমিন প্যানেল বন্ধ করা হয়েছে');
+          toggleAdminPanel();
         }}
         className="admin-portal-exclude fixed bottom-2.5 right-2.5 z-[9999] w-7 h-7 rounded-md cursor-pointer flex items-center justify-center opacity-5 hover:opacity-100 transition-opacity duration-300 bg-black/90 text-amber-500 select-none text-xs border border-zinc-805 shadow-xl"
         title="Admin settings toggle"
       >
         ⚙️
       </div>
+
+      {/* 🔐 PASSWORD PROMPT MODAL */}
+      <AnimatePresence>
+        {showPasswordPrompt && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="admin-portal-exclude fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 font-sans"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-[#121216] border border-gray-800 rounded-xl p-5 w-full max-w-sm shadow-2xl relative text-center"
+            >
+              <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest mb-1 flex items-center justify-center gap-1.5">
+                🔐 সিকিউর পোর্টালে প্রবেশ
+              </h3>
+              <p className="text-[11px] text-gray-400 mb-4 leading-relaxed">
+                অ্যাডমিন কনফিগারেশন প্যানেল অ্যাক্সেস করতে অনুগ্রহ করে সিক্রেট পাসওয়ার্ড প্রদান করুন
+              </p>
+
+              <form onSubmit={handleVerifyPassword} className="space-y-3">
+                <input 
+                  type="password"
+                  placeholder="পাসওয়ার্ড লিখুন..."
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full bg-[#181820] border border-gray-700 rounded-lg px-3 py-2 text-sm text-center focus:ring-1 focus:ring-amber-500 focus:outline-none text-white tracking-widest font-mono select-text"
+                  autoFocus
+                  required
+                />
+                
+                <div className="flex gap-2 text-xs pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordPrompt(false)}
+                    className="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-350 rounded-lg font-bold transition cursor-pointer"
+                  >
+                    বাতিল (Cancel)
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold transition cursor-pointer"
+                  >
+                    যাচাই করুন (Submit)
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
