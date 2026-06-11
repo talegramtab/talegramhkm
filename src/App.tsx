@@ -895,7 +895,7 @@ export default function App() {
         </div>
 
         {/* Visual Footer designed to mimic actual streaming portal */}
-        <footer className="mt-auto py-8 text-center border-t border-zinc-900 bg-black/60">
+        <footer className="mt-auto py-8 text-center border-t border-zinc-900 bg-black/60 font-sans">
           <p className="text-[10px] text-gray-500 flex items-center justify-center gap-0.5">
             <span>© 2026 {settings.pageTitle} - All rights & Direct Streams Secured</span>
             <span 
@@ -903,9 +903,9 @@ export default function App() {
                 e.preventDefault();
                 e.stopPropagation();
                 setIsAdminOpen(!isAdminOpen);
-                triggerToast(isAdminOpen ? '🔒 অ্যাডমিন প্যানেল বন্ধ করা হয়েছে' : '🔓 অ্যাডমিন প্যানেল খোলা হয়েছে!');
+                triggerToast(!isAdminOpen ? '🔓 অ্যাডমিন প্যানেল খোলা হয়েছে!' : '🔒 অ্যাডমিন প্যানেল বন্ধ করা হয়েছে');
               }}
-              className="admin-portal-exclude cursor-pointer select-none text-zinc-600 hover:text-amber-500 w-2.5 h-2.5 inline-flex items-center justify-center font-bold font-mono transition-colors"
+              className="admin-portal-exclude cursor-pointer select-none text-zinc-700 hover:text-amber-500 w-3 h-3 inline-flex items-center justify-center font-bold font-mono transition-colors"
               title="Portal Management System"
             >
               .
@@ -919,6 +919,20 @@ export default function App() {
           </div>
         </footer>
 
+      </div>
+
+      {/* 🔐 STEALTH SECRET CONTROL TOGGLE - Bottom Right Corner (Faint and almost invisible to ordinary users, easy to access for owner) */}
+      <div 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsAdminOpen(!isAdminOpen);
+          triggerToast(!isAdminOpen ? '🔓 অ্যাডমিন প্যানেল খোলা হয়েছে!' : '🔒 অ্যাডমিন প্যানেল বন্ধ করা হয়েছে');
+        }}
+        className="admin-portal-exclude fixed bottom-2.5 right-2.5 z-[9999] w-7 h-7 rounded-md cursor-pointer flex items-center justify-center opacity-5 hover:opacity-100 transition-opacity duration-300 bg-black/90 text-amber-500 select-none text-xs border border-zinc-805 shadow-xl"
+        title="Admin settings toggle"
+      >
+        ⚙️
       </div>
     </div>
   );
