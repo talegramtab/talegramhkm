@@ -1,0 +1,6 @@
+{
+  "name": "Video Landing Page",
+  "description": "একটি আকর্ষণীয় ভিডিও ল্যান্ডিং পেজ যেখানে থাম্বনেইল সহ ওয়াচ এবং ডাউনলোড বাটন রয়েছে। এই পেজের যেকোনো স্থানে ক্লিক করলে আপনার অ্যাড বা নির্দিষ্ট লিঙ্কে নিয়ে যায়।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
