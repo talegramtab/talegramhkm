@@ -50,7 +50,7 @@ export const CATEGORY_PRESETS: Record<string, VideoItem[]> = {
     },
     {
       id: 'm2',
-      title: 'নতুন বাংলা ব্লকবাস্টার নাটক ২০২৬ - Exclusive HD Direct Source Link',
+      title: 'New Bangla Blockbuster Drama 2026 - Exclusive HD Direct Source Link',
       channelName: 'Dhamaka Drama BD',
       channelLogo: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=80&h=80&fit=crop&q=80',
       views: '1.2M views',

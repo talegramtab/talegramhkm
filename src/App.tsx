@@ -107,7 +107,7 @@ export default function App() {
   const toggleAdminPanel = () => {
     if (isAdminOpen) {
       setIsAdminOpen(false);
-      triggerToast('🔒 অ্যাডমিন প্যানেল বন্ধ করা হয়েছে');
+      triggerToast('🔒 Admin panel closed');
     } else {
       setShowPasswordPrompt(true);
       setPasswordInput('');
@@ -120,9 +120,9 @@ export default function App() {
       setIsAdminOpen(true);
       setShowPasswordPrompt(false);
       setPasswordInput('');
-      triggerToast('🔓 অ্যাডমিন প্যানেল খোলা হয়েছে!');
+      triggerToast('🔓 Admin panel unlocked!');
     } else {
-      triggerToast('❌ ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।');
+      triggerToast('❌ Wrong password! Try again.');
     }
   };
   
@@ -175,7 +175,7 @@ export default function App() {
     } else {
       setVideos([...CATEGORY_PRESETS[cat]]);
     }
-    triggerToast(`কোড নিস ক্যাটাগরি: ${cat.toUpperCase()} লোড হয়েছে।`);
+    triggerToast(`Category: ${cat.toUpperCase()} loaded.`);
   };
 
   const triggerToast = (msg: string) => {
@@ -187,7 +187,7 @@ export default function App() {
   // Safe global click redirect engine
   const executeAdRedirect = (itemId?: string, actionName?: string) => {
     if (!settings.adUrl) {
-      triggerToast('⚠️ দুঃখিত, কোনো অ্যাডের লিঙ্ক যুক্ত করা হয়নি!');
+      triggerToast('⚠️ Sorry, no ad URL configured!');
       return;
     }
 
@@ -270,14 +270,14 @@ export default function App() {
     setNewDuration('');
     setNewThumbnail('');
 
-    triggerToast('✅ নতুন কাস্টম থাম্বনেইল কার্ড পেজে সফলভাবে যোগ করা হয়েছে!');
+    triggerToast('✅ New custom thumbnail card added successfully!');
   };
 
   // Delete video card
   const handleDeleteVideo = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setVideos(prev => prev.filter(v => v.id !== id));
-    triggerToast('🗑️ কার্ডটি ডিলিট করা হয়েছে!');
+    triggerToast('🗑️ Card deleted successfully!');
   };
 
   // Save admin configuration permanently to backend server data-store
@@ -292,11 +292,11 @@ export default function App() {
       return res.json();
     })
     .then(() => {
-      triggerToast('💾 সারা বিশ্বের সকল ইউজারের জন্য সার্ভারে কনফিগারেশন সেভ হয়েছে!');
+      triggerToast('💾 Configuration saved permanently to the server for all users!');
     })
     .catch(err => {
       console.error(err);
-      triggerToast('❌ সার্ভার সেভ ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+      triggerToast('❌ Server save failed. Please try again.');
     });
   };
 
@@ -312,13 +312,13 @@ export default function App() {
       setStatsBreakdown({});
       localStorage.setItem('vlp_click_count', '0');
       localStorage.setItem('vlp_stats_breakdown', '{}');
-      triggerToast('🔄 লাইভ ক্লিক কাউন্টার ও সার্ভার অ্যানালিটিক্স রিসেট করা হয়েছে।');
+      triggerToast('🔄 Live clicks and server analytics have been reset.');
     })
     .catch(err => {
       console.error(err);
       setClickCount(0);
       setStatsBreakdown({});
-      triggerToast('🔄 লোকাল কাউন্টার রিসেট হয়েছে।');
+      triggerToast('🔄 Local counter reset.');
     });
   };
 
@@ -347,11 +347,11 @@ export default function App() {
     })
     .then(() => fetch('/api/reset-stats', { method: 'POST' }))
     .then(() => {
-      triggerToast('🔄 সমস্ত অপশন রিফ্রেস করে ডিফল্ট করা হয়েছে!');
+      triggerToast('🔄 All settings and options reset to default!');
     })
     .catch(err => {
       console.error(err);
-      triggerToast('🔄 অপশন রিসেট হয়েছে!');
+      triggerToast('🔄 Options reset completed!');
     });
   };
 
@@ -379,13 +379,13 @@ export default function App() {
                 <div className="lg:col-span-4 space-y-4 bg-gray-900/60 p-4 rounded-xl border border-gray-800">
                   <h3 className="text-sm font-bold text-gray-200 border-b border-gray-800 pb-2 flex items-center gap-1.5 uppercase tracking-wide">
                     <span className="p-1 rounded bg-rose-500/10 text-rose-400"><MousePointerClick size={14} /></span>
-                    অ্যাড ও ক্যাম্পেইন লিঙ্ক সেটিংস
+                    Ad & Campaign Link Settings
                   </h3>
 
                   {/* Ad Link URL */}
                   <div>
                     <label className="block text-[11px] font-medium text-amber-400 mb-1.5 flex items-center justify-between">
-                      <span>আমার অ্যাডের লিঙ্ক (Target Destination Ad URL):</span>
+                      <span>My Ad Link (Target Destination Ad URL):</span>
                       <span className="text-[10px] text-gray-500 font-mono">Real-time update</span>
                     </label>
                     <div className="relative">
@@ -401,14 +401,14 @@ export default function App() {
                       </span>
                     </div>
                     <p className="text-[10px] text-gray-400 mt-1 leading-relaxed">
-                      💡 ইউজার যেখানেই ক্লিক করুক, তাকে সঙ্গে সঙ্গে এই অ্যাডের লিঙ্কে নিয়ে যাওয়া হবে।
+                      💡 Click redirection is active: visitors will be immediately sent to this Ad URL.
                     </p>
                   </div>
 
                   {/* Page Title Customizer */}
                   <div>
                     <label className="block text-[11px] font-medium text-gray-300 mb-1">
-                      ওয়েবসাইট হেডার নাম (Portal Top Header Page Title):
+                      Website Header Name (Portal Top Header Page Title):
                     </label>
                     <input 
                       type="text"
@@ -422,7 +422,7 @@ export default function App() {
                   {/* Redirection Trigger Method */}
                   <div>
                     <label className="block text-[11px] font-medium text-gray-300 mb-1">
-                      রিডাইরেক্ট মেথড (Target Redirect Mechanism):
+                      Redirect Method (Target Redirect Mechanism):
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
@@ -434,7 +434,7 @@ export default function App() {
                             : 'bg-[#181820] text-gray-400 hover:text-white border border-gray-800'
                         }`}
                       >
-                        গ্লোবাল ক্লিক (যেকোনো জায়গায়)
+                        Global Click (Anywhere)
                       </button>
                       <button
                         type="button"
@@ -445,7 +445,7 @@ export default function App() {
                             : 'bg-[#181820] text-gray-400 hover:text-white border border-gray-800'
                         }`}
                       >
-                        শুধুমাত্র ভিডিও বাটন ক্লিক
+                        Video Button Only Click
                       </button>
                     </div>
                   </div>
@@ -453,7 +453,7 @@ export default function App() {
                   {/* Themes Customization switcher */}
                   <div>
                     <label className="block text-[11px] font-medium text-gray-300 mb-1.5">
-                      ল্যান্ডিং পেজের থিম সিলেক্ট করুন (Site Visual Theme):
+                      Select Landing Page Theme (Site Visual Theme):
                     </label>
                     <div className="grid grid-cols-3 gap-1.5">
                       {(['youtube', 'torrent', 'netflix'] as ThemeType[]).map((thm) => (
@@ -462,7 +462,7 @@ export default function App() {
                           type="button"
                           onClick={() => {
                             setSettings(prev => ({ ...prev, selectedTheme: thm }));
-                            triggerToast(`ডিজাইন থিম রূপান্তর করা হয়েছে: ${thm.toUpperCase()}`);
+                            triggerToast(`Design theme switched to: ${thm.toUpperCase()}`);
                           }}
                           className={`py-1.5 rounded-lg text-[11px] font-semibold tracking-wide capitalize transition cursor-pointer ${
                             settings.selectedTheme === thm
@@ -482,14 +482,14 @@ export default function App() {
                   <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                     <h3 className="text-sm font-bold text-gray-200 flex items-center gap-1.5 uppercase tracking-wide">
                       <span className="p-1 rounded bg-indigo-500/10 text-indigo-400"><Film size={14} /></span>
-                      ভিডিও ক্যাটাগরি ও থাম্বনেইল সেটিংস
+                      Video Category & Thumbnail Settings
                     </h3>
                   </div>
 
                   {/* Niche selector presets */}
                   <div>
                     <label className="block text-[11px] font-medium text-gray-300 mb-1.5 text-xs text-amber-500">
-                      পাবলিকদের আকর্ষণের জন্য থাম্বনেইল নিস (Pre-load Video Niche):
+                      Thumbnail Niche for Visitor Attraction (Pre-load Video Niche):
                     </label>
                     <div className="grid grid-cols-5 gap-1.5">
                       {(['gaming', 'movies', 'software', 'viral', 'custom'] as const).map((cat) => (
@@ -503,7 +503,7 @@ export default function App() {
                               : 'bg-[#181820] text-gray-400 hover:text-white border border-gray-800'
                           }`}
                         >
-                          {cat === 'custom' ? '✍️ কাস্টম' : cat}
+                          {cat === 'custom' ? '✍️ Custom' : cat}
                         </button>
                       ))}
                     </div>
@@ -512,12 +512,12 @@ export default function App() {
                   {/* Add Custom Video Form */}
                   <form onSubmit={handleAddVideo} className="space-y-2 bg-[#171721] p-3 rounded-lg border border-gray-800">
                     <span className="text-[11px] font-bold text-indigo-400 block pb-1 border-b border-gray-800/60">
-                      ➕ কাস্টম থাম্বনেইল কার্ড সরাসরি যুক্ত করুন:
+                      ➕ Add Custom Thumbnail Card Directly:
                     </span>
                     <div className="grid grid-cols-2 gap-2">
                       <input 
                         type="text"
-                        placeholder="ভিডিওর শিরোনাম (Video Title)"
+                        placeholder="Video Title"
                         value={newTitle}
                         onChange={(e) => setNewTitle(e.target.value)}
                         className="w-full bg-[#1e1e2d] border border-gray-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -525,7 +525,7 @@ export default function App() {
                       />
                       <input 
                         type="text"
-                        placeholder="চ্যানেলের নাম (e.g. BD Movie Hub)"
+                        placeholder="Channel Name (e.g. Desi Hot Streams)"
                         value={newChannel}
                         onChange={(e) => setNewChannel(e.target.value)}
                         className="w-full bg-[#1e1e2d] border border-gray-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -536,7 +536,7 @@ export default function App() {
                     <div>
                       <input 
                         type="text"
-                        placeholder="থাম্বনেইল ইমেজ লিঙ্ক বসান (e.g. https://images.unsplash.com/...)"
+                        placeholder="Paste Thumbnail Image Link (e.g. https://i.postimg.cc/...)"
                         value={newThumbnail}
                         onChange={(e) => setNewThumbnail(e.target.value)}
                         className="w-full bg-[#1e1e2d] border border-gray-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-zinc-500"
@@ -546,14 +546,14 @@ export default function App() {
                     <div className="grid grid-cols-3 gap-2">
                       <input 
                         type="text"
-                        placeholder="ভিউ কাউন্ট (e.g. 500K)"
+                        placeholder="Views (e.g. 5.2M)"
                         value={newViews}
                         onChange={(e) => setNewViews(e.target.value)}
                         className="w-full bg-[#1e1e2d] border border-gray-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none"
                       />
                       <input 
                         type="text"
-                        placeholder="সময়কাল (e.g. 10:25)"
+                        placeholder="Duration (e.g. 6:54)"
                         value={newDuration}
                         onChange={(e) => setNewDuration(e.target.value)}
                         className="w-full bg-[#1e1e2d] border border-gray-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none"
@@ -563,23 +563,23 @@ export default function App() {
                         className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded transition flex items-center justify-center gap-1 cursor-pointer"
                       >
                         <Plus size={14} />
-                        যুক্ত করুন
+                        Add Card
                       </button>
                     </div>
                     <div className="text-[10px] text-gray-500 flex items-center justify-between">
-                      <span>💡 থাম্বনেইল অপশনাল (ফাঁকা রাখলে অটোমেটিক ইমেজ সেট হবে)</span>
+                      <span>💡 Thumbnail optional (empty sets a random Unsplash placeholder image)</span>
                     </div>
                   </form>
 
                   {/* 🖼️ ACTIVE CARD THUMBNAIL MANAGER */}
                   <div className="space-y-2 bg-[#171721] p-3 rounded-lg border border-gray-800 mt-2">
                     <span className="text-[11px] font-bold text-amber-400 block pb-1 border-b border-gray-800/60 flex items-center gap-1 justify-between">
-                      <span>🖼️ রিয়েল-টাইম থাম্বনেইল ইমেজ এডিটর</span>
-                      <span className="text-[9px] bg-amber-500/10 text-amber-500 px-1 rounded">সরাসরি পরিবর্তন</span>
+                      <span>🖼️ Real-Time Thumbnail Image Editor</span>
+                      <span className="text-[9px] bg-amber-500/10 text-amber-500 px-1 rounded">Instant Update</span>
                     </span>
                     
                     {videos.length === 0 ? (
-                      <span className="text-[11px] text-gray-500 block italic">ইমেজ এডিট করার মতো কোনো ভিডিও নেই।</span>
+                      <span className="text-[11px] text-gray-500 block italic">No videos available to change thumbnails.</span>
                     ) : (
                       <div className="space-y-2 max-h-[140px] overflow-y-auto pr-1">
                         {videos.map((vid) => (
@@ -599,7 +599,7 @@ export default function App() {
                                   const newUrl = e.target.value;
                                   setVideos(prev => prev.map(v => v.id === vid.id ? { ...v, thumbnailUrl: newUrl } : v));
                                 }}
-                                placeholder="এখানে আপনার ইমেজ লিঙ্ক পেস্ট করুন..."
+                                placeholder="Paste your image URL link here..."
                                 className="w-full bg-[#12121c] border border-gray-700/85 rounded px-1.5 py-0.5 mt-0.5 text-[10px] text-gray-200 focus:outline-none focus:ring-1 focus:ring-amber-500 font-mono"
                               />
                             </div>
@@ -610,7 +610,7 @@ export default function App() {
 
                     {/* Quick high CTR thumbnail template choices */}
                     <div className="pt-1.5 border-t border-gray-800/40">
-                      <span className="text-[9px] text-gray-400 block mb-1">🔥 হাই-ক্লিক থাম্বনেইল টেমপ্লেটসমূহ (১-ক্লিক পরিবর্তন):</span>
+                      <span className="text-[9px] text-gray-400 block mb-1">🔥 High CTR Thumbnail Templates (1-Click Apply to First Card):</span>
                       <div className="grid grid-cols-2 gap-1.5">
                         {[
                           { title: "🔴 Live Green-screen HD", url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=640&h=360&fit=crop&q=80" },
@@ -630,13 +630,13 @@ export default function App() {
                                   }
                                   return next;
                                 });
-                                triggerToast(`প্রথম থাম্বনেইল ইমেজটি আপডেট করা হয়েছে!`);
+                                triggerToast(`First thumbnail updated!`);
                               } else {
-                                triggerToast(`⚠️ পরিবর্তন করার মতো কোনো ভিডিও নেই!`);
+                                triggerToast(`⚠️ No video card found to apply!`);
                               }
                             }}
                             className="text-[9px] bg-[#12121c] hover:bg-[#1a1a2b] text-zinc-300 px-1 py-1 rounded border border-gray-800 text-left truncate cursor-pointer transition flex items-center justify-between"
-                            title="প্রথম থাম্বনেইলে সেট করুন"
+                            title="Apply to first card"
                           >
                             <span>{t.title}</span>
                             <span className="text-[8px] text-amber-500 font-mono">Apply</span>
@@ -652,7 +652,7 @@ export default function App() {
                   <div>
                     <h3 className="text-sm font-bold text-gray-200 border-b border-gray-800 pb-2 flex items-center gap-1.5 uppercase tracking-wide">
                       <span className="p-1 rounded bg-teal-500/10 text-teal-400"><Activity size={14} /></span>
-                      রিয়েল-টাইম অ্যাড ক্লিক কাউন্টার
+                      Real-Time Ad Click Counter
                     </h3>
 
                     {/* Stats Widget Showcase */}
@@ -662,13 +662,13 @@ export default function App() {
                           <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-ping" />
                           <span className="text-[9px] text-emerald-400 uppercase font-mono">Live Tracker</span>
                         </div>
-                        <span className="text-[10px] text-gray-400 uppercase tracking-wider block">মোট ক্লিক রিডাইরেক্ট</span>
+                        <span className="text-[10px] text-gray-400 uppercase tracking-wider block">Total Clicks Redirected</span>
                         <div className="text-3xl font-black text-amber-400 mt-1 font-mono tracking-tight flex items-center justify-center gap-1.5">
                           <MousePointerClick size={22} className="text-amber-500 animate-bounce" />
                           {clickCount}
                         </div>
                         <p className="text-[10px] text-gray-500 mt-1">
-                          (আপনার দেওয়া অ্যাডের লিঙ্কে ট্র্যাফিক রিডাইরেক্ট সংখ্যা)
+                          (Total traffic redirected to your target Ad URL)
                         </p>
                       </div>
                     </div>
@@ -676,18 +676,18 @@ export default function App() {
                     {/* Simple Breakdown lists */}
                     <div className="mt-3 space-y-1 text-[11px] bg-[#14141c] p-2.5 rounded border border-gray-800 max-h-[100px] overflow-y-auto">
                       <span className="text-gray-400 block font-bold mb-1 border-b border-gray-800 pb-1 text-[9px] uppercase">
-                        ক্লিকের বিভাজন বিশ্লেষণ (Specific Heatmap)
+                        Click Breakdown Analysis (Specific Heatmap)
                       </span>
                       {Object.keys(statsBreakdown).length === 0 ? (
-                        <span className="text-gray-500 italic text-[10px] block py-1">কোনো লাইভ ট্র্যাফিক ডেটা নেই...</span>
+                        <span className="text-gray-500 italic text-[10px] block py-1">No live traffic data yet...</span>
                       ) : (
                         Object.entries(statsBreakdown).map(([key, count]) => {
                           const vObj = videos.find(v => v.id === key);
-                          const name = key === 'global_click' ? 'বডির যেকোনো জায়গায় ক্লিক' : (vObj ? `কার্ড: ${vObj.title.substring(0, 15)}...` : `ID: ${key}`);
+                          const name = key === 'global_click' ? 'Anywhere Body Click' : (vObj ? `Card: ${vObj.title.substring(0, 15)}...` : `ID: ${key}`);
                           return (
                             <div key={key} className="flex justify-between text-[11px] text-gray-300 font-mono">
                               <span className="truncate max-w-[140px]">{name}</span>
-                              <span className="text-amber-400 font-bold">{count}টি ক্লিক</span>
+                              <span className="text-amber-400 font-bold">{count} Clicks</span>
                             </div>
                           );
                         })
@@ -702,7 +702,7 @@ export default function App() {
                       onClick={handleSaveToServer}
                       className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-950/25"
                     >
-                      💾 সার্ভারে পার্মানেন্টলি সেভ করুন (Save Global)
+                      💾 Save Permanently to Server (Save Global)
                     </button>
 
                     <div className="grid grid-cols-2 gap-2">
@@ -711,13 +711,13 @@ export default function App() {
                         className="px-2 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer"
                       >
                         <RotateCcw size={11} />
-                        কাউন্টার মুছুন
+                        Clear Counter
                       </button>
                       <button
                         onClick={handleResetAllDefaults}
                         className="px-2 py-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 hover:text-white border border-red-900/30 rounded text-[10px] font-bold transition cursor-pointer"
                       >
-                        ডিফল্ট করুন
+                        Reset Default
                       </button>
                     </div>
                   </div>
@@ -789,7 +789,7 @@ export default function App() {
                 <div className="flex">
                   <input 
                     type="text" 
-                    placeholder="পছন্দের ভিডিও বা অ্যাপ অনুসন্ধান করুন..." 
+                    placeholder="Search for videos or apps..." 
                     className="w-full bg-[#121212] border border-gray-700/85 rounded-l-full py-1.5 px-4 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-600"
                     disabled
                   />
@@ -810,7 +810,7 @@ export default function App() {
 
             {/* Quick Filter Menu Items */}
             <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none border-b border-gray-800/80 bg-[#0f0f0f]">
-              {['অল ভিডিও (All)', 'মোস্ট ভিউড', 'বিডি স্পেশাল', 'নতুন রিলিজ', 'জনপ্রিয়', 'ডাউনলোড লিঙ্ক'].map((tag, i) => (
+              {['All Videos', 'Most Viewed', 'Special Releases', 'New Releases', 'Popular', 'Direct Downloads'].map((tag, i) => (
                 <span 
                   key={i} 
                   className={`text-[11px] font-semibold px-3 py-1 rounded-full whitespace-nowrap ${
@@ -832,17 +832,17 @@ export default function App() {
                 NETPLATE
               </span>
               <nav className="hidden md:flex items-center gap-4 text-xs text-gray-300 font-medium">
-                <span className="hover:text-white transition">হোম (Home)</span>
-                <span className="hover:text-white transition">নাটক ও মুভি</span>
-                <span className="hover:text-white transition">গেমস</span>
-                <span className="hover:text-white transition">ডাউনলোড সেন্ট্রাল</span>
+                <span className="hover:text-white transition">Home</span>
+                <span className="hover:text-white transition">Dramas & Movies</span>
+                <span className="hover:text-white transition">Games</span>
+                <span className="hover:text-white transition">Download Central</span>
               </nav>
             </div>
             
             <div className="flex items-center gap-3">
               <Search size={16} className="text-gray-300" />
               <button className="bg-[#E50914] text-white text-xs font-bold px-3 py-1.5 rounded uppercase hover:bg-red-700 transition">
-                ভিআইপি এক্সেস
+                VIP Access
               </button>
             </div>
           </header>
@@ -859,7 +859,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-4 font-mono text-[11px] text-emerald-500/80">
               <span className="bg-emerald-950/50 px-2 py-0.5 border border-emerald-500/20 rounded">
-                ⚡ ৩.২ GB/S ULTRA DUAL SERVER
+                ⚡ 3.2 GB/S ULTRA DUAL SERVER
               </span>
             </div>
           </header>
@@ -874,12 +874,12 @@ export default function App() {
                 {settings.pageTitle}
               </h1>
               <p className="text-xs text-gray-400 mt-1">
-                নিচের যেকোনো ভিডিওতে ক্লিক করে সরাসরি ওয়াচ (Watch) অথবা ডাউনলোড (Download) করুন। 
+                Click on any video below to watch or download directly.
               </p>
             </div>
             <div className="bg-rose-950/20 border border-rose-800/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs text-rose-400 font-medium">
               <Info size={13} className="text-rose-400" />
-              <span>সার্ভার স্ট্যাটাস: অন-লাইন (High-speed)</span>
+              <span>Server Status: ONLINE (High-speed)</span>
             </div>
           </div>
         </div>
@@ -888,8 +888,8 @@ export default function App() {
         <div className="px-4 md:px-8 py-6 max-w-7xl mx-auto w-full flex-1">
           {videos.length === 0 ? (
             <div className="text-center py-20 bg-gray-900/30 border border-dashed border-gray-800 rounded-2xl">
-              <span className="text-gray-400 font-medium text-sm block">কোনো ভিডিও থাম্বনেইল কার্ড পাওয়া যায়নি!</span>
-              <p className="text-xs text-gray-500 mt-1">দয়া করে এডমিন প্যানেল থেকে থাম্বনেইল ক্যাটাগরি পপুলেট বা কোনো কাস্টম আইটেম যুক্ত করুন।</p>
+              <span className="text-gray-400 font-medium text-sm block">No video thumbnail cards found!</span>
+              <p className="text-xs text-gray-500 mt-1">Please populate thumbnail categories or add some custom items from the admin panel.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -999,7 +999,7 @@ export default function App() {
                         className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition duration-200 transform active:scale-95 cursor-pointer shadow-md shadow-red-950/25"
                       >
                         <Play size={12} className="fill-current" />
-                        ভিডিও দেখুন (Watch)
+                        Watch Video
                       </button>
 
                       <button
@@ -1011,7 +1011,7 @@ export default function App() {
                         className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition duration-200 transform active:scale-95 cursor-pointer shadow-md shadow-emerald-950/25"
                       >
                         <Download size={12} />
-                        ডাউনলোড (Download)
+                        Download
                       </button>
                     </div>
 
@@ -1039,10 +1039,10 @@ export default function App() {
             </span>
           </p>
           <div className="flex justify-center gap-4 text-[10px] text-gray-600 mt-2">
-            <span>কমিউনিটি নির্দেশিকা</span>
-            <span>প্রাইভেসি পলিসি</span>
-            <span>যোগাযোগ করুন</span>
-            <span>অ্যাডভার্টাইজিং নেটওয়ার্ক</span>
+            <span>Community Guidelines</span>
+            <span>Privacy Policy</span>
+            <span>Contact Us</span>
+            <span>Advertising Network</span>
           </div>
         </footer>
 
@@ -1077,16 +1077,16 @@ export default function App() {
               className="bg-[#121216] border border-gray-800 rounded-xl p-5 w-full max-w-sm shadow-2xl relative text-center"
             >
               <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest mb-1 flex items-center justify-center gap-1.5">
-                🔐 সিকিউর পোর্টালে প্রবেশ
+                🔐 Secure Administration Login
               </h3>
               <p className="text-[11px] text-gray-400 mb-4 leading-relaxed">
-                অ্যাডমিন কনফিগারেশন প্যানেল অ্যাক্সেস করতে অনুগ্রহ করে সিক্রেট পাসওয়ার্ড প্রদান করুন
+                Please enter your secret password to access the admin panel.
               </p>
 
               <form onSubmit={handleVerifyPassword} className="space-y-3">
                 <input 
                   type="password"
-                  placeholder="পাসওয়ার্ড লিখুন..."
+                  placeholder="Enter password..."
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
                   className="w-full bg-[#181820] border border-gray-700 rounded-lg px-3 py-2 text-sm text-center focus:ring-1 focus:ring-amber-500 focus:outline-none text-white tracking-widest font-mono select-text"
@@ -1100,13 +1100,13 @@ export default function App() {
                     onClick={() => setShowPasswordPrompt(false)}
                     className="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-350 rounded-lg font-bold transition cursor-pointer"
                   >
-                    বাতিল (Cancel)
+                    Cancel
                   </button>
                   <button
                     type="submit"
                     className="flex-1 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold transition cursor-pointer"
                   >
-                    যাচাই করুন (Submit)
+                    Submit
                   </button>
                 </div>
               </form>
